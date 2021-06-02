@@ -1,5 +1,7 @@
 import random
 
+# tính a^k mod n
+# thuật toán nhân bình phương có lặp trong slide
 def Mod_Exp(a, k, n):
     b = 1
     if(k == 0):
@@ -7,14 +9,17 @@ def Mod_Exp(a, k, n):
     A = a
     if(k & 1):
       b = a
+    # đổi mũ k về nhị phân, ép kiểu string để tìm length
+    # trừ 2 vì python biểu diễn số nhị phân dạng 0b101010111 nên chỉ cần lấy phần 101010111
     lenk = len(str(bin(k))) - 2 # '0b'
     for i in range(lenk):
       A = A**2 % n
-      k >>= 1
+      k >>= 1 # phép shift phải, giảm k đi 2 lần
       if(k & 1 == 1):
           b = (A*b) % n
     return b
 
+# định nghĩa 2.3.6 trong silde về ktra hợp số
 def check_composite(n, a, r, s):
     x = Mod_Exp(a, r, n)
     if(x == 1 or x== n-1):
@@ -25,27 +30,37 @@ def check_composite(n, a, r, s):
             return False
     return True
 
+# thuật toán ktra số nguyên tố Miller Rabin
 def miller_rabin(n, iter_ = 20):
     # n-1 = 2^s * r
     s = 0
     r = n -1
+    # r chia hết cho 2
     while(r & 1 == 0):
-        r >>= 1
-        s += 1 
+        r >>= 1 # chia r cho 2
+        s += 1  # tăng s
+    # đã tính được r và s
     for i in range(iter_):
+        # 2 <= a <= n-2 như trong slide
         a = random.randint(2, n-2)
+        # kiểm tra là hợp số (compóite)
         if(check_composite(n, a, r, s)):
             return False
     return True
 
+# hàm này trả về random 1 số nguyên tố
 def selectNum():
     while(True):
+        # lấy random 1 số 128 bit
         n = random.getrandbits(128)
+        # n là chẵn thì cho chạy tiếp để lấy giá trị n khác
         if not (n & 1):
             continue
+        # ktra xem có là nguyên tố ko?
         if(miller_rabin(n)):
             return n
-
+# thuật toán euclit mở rộng trong silde
+# mình chưa hiểu rõ thuật toán này nhưng triển khai theo slide
 def ExtEuclidean(a, b):
     if(b == 0):
         return a, 1, 0
@@ -80,6 +95,7 @@ def key_gen():
     n = p*q
     print(f'p = {p}\nq = {q}')
     phi_n = (p-1)*(q-1)
+    
     while(True):
         # 1 < e < phi_n
         e = random.randint(2, phi_n-1)
