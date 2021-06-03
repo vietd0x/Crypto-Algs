@@ -99,7 +99,7 @@ def key_gen():
     while(True):
         # 1 < e < phi_n
         e = random.randint(2, phi_n-1)
-        if(GCD(e, phi_n)):
+        if(GCD(e, phi_n) == 1):
             # phi_n*x + e*y = gcd
             # O day gcd da = 1, hay GCD(phi_n, e) = 1
             # <=> e^-1 mod phi_n = y
