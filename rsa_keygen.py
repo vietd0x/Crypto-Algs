@@ -100,10 +100,13 @@ def key_gen():
         # 1 < e < phi_n
         e = random.randint(2, phi_n-1)
         if(GCD(e, phi_n)):
-            gcd, s, t = ExtEuclidean(phi_n, e)
-            if(gcd == (s * phi_n + t * e)):
-                d = t % phi_n
-                return e, n, d
+            # phi_n*x + e*y = gcd
+            # O day gcd da = 1, hay GCD(phi_n, e) = 1
+            # <=> e^-1 mod phi_n = y
+            gcd, x, y = ExtEuclidean(phi_n, e)
+            d = y % phi_n
+            return e, n, d
+
 if __name__ == '__main__': 
    e, n, d = key_gen()
    print(f"e = {e}\nn = {n}\nd = {d}")
