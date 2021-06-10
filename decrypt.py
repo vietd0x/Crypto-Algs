@@ -15,8 +15,7 @@ def Mod_Exp(a, k, n):
 
 def decrypt(C, d, n):
     blocksize = 1
-    flag = 1
-    while(flag):
+    while(True):
         try:
             # ham n.to_bytes(blocksize, 'big') chuyen so nguyen sang dang bytes
             # nhung khi ta ko biet trc dc blocksize chinh xac la bao nhieu
