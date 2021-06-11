@@ -51,8 +51,8 @@ def miller_rabin(n, iter_ = 20):
 # hàm này trả về random 1 số nguyên tố
 def selectNum():
     while(True):
-        # lấy random 1 số 128 bit
-        n = random.getrandbits(128)
+        # lấy random 1 số 2048 bit
+        n = random.getrandbits(2048)
         # n là chẵn thì cho chạy tiếp để lấy giá trị n khác
         if not (n & 1):
             continue
@@ -83,11 +83,6 @@ def ExtEuclidean(a, b):
         y1 = y
     return a, x2, y2
 
-def GCD(a, b):
-    if(a == 0):
-        return b
-    return GCD(b%a, a)
-
 def key_gen():
     p = selectNum()
     q = selectNum()
@@ -99,11 +94,11 @@ def key_gen():
     while(True):
         # 1 < e < phi_n
         e = random.randint(2, phi_n-1)
-        if(GCD(e, phi_n) == 1):
-            # phi_n*x + e*y = gcd
-            # O day gcd da = 1, hay GCD(phi_n, e) = 1
-            # <=> e^-1 mod phi_n = y
-            gcd, x, y = ExtEuclidean(phi_n, e)
+        # phi_n*x + e*y = gcd
+        # tim e until gcd TM = 1, hay GCD(phi_n, e) = 1
+        # <=> e^-1 mod phi_n = y
+        gcd, x, y = ExtEuclidean(phi_n, e)
+        if(gcd == 1):
             d = y % phi_n
             return e, n, d
 
