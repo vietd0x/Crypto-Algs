@@ -1,18 +1,17 @@
 # a^k mod n
 def Mod_Exp(a, k, n):
-    b = 1
+    ans = 1
     if(k == 0):
-        return b
-    A = a
-    if(k & 1):
-        b = a
+        return ans
+    if(k&1):
+        ans = a
     lenk = len(str(bin(k))) - 2
     for i in range(lenk):
-        A = A**2 % n
+        a = a**2  % n
         k >>= 1
-        if(k & 1 == 1):
-            b = (A*b) % n
-    return b
+        if(k&1):    
+            ans = (a*ans) % n
+    return ans
 
 if __name__ == '__main__':
     # M ep kieu sang bytes
