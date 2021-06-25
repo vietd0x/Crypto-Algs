@@ -3,21 +3,18 @@ import random
 # tính a^k mod n
 # thuật toán nhân bình phương có lặp trong slide
 def Mod_Exp(a, k, n):
-    b = 1
+    ans = 1
     if(k == 0):
-      return b
-    A = a
-    if(k & 1):
-      b = a
-    # đổi mũ k về nhị phân, ép kiểu string để tìm length
-    # trừ 2 vì python biểu diễn số nhị phân dạng 0b101010111 nên chỉ cần lấy phần 101010111
-    lenk = len(str(bin(k))) - 2 # '0b'
+        return ans
+    if(k&1):
+        ans = a
+    lenk = len(str(bin(k))) - 2
     for i in range(lenk):
-      A = A**2 % n
-      k >>= 1 # phép shift phải, giảm k đi 2 lần
-      if(k & 1 == 1):
-          b = (A*b) % n
-    return b
+        a = a**2  % n
+        k >>= 1
+        if(k&1):    
+            ans = (a*ans) % n
+    return ans
 
 # định nghĩa 2.3.6 trong silde về ktra hợp số
 def check_composite(n, a, r, s):
