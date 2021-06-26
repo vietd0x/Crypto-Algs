@@ -16,14 +16,13 @@ def Mod_Exp(a, k, n):
             ans = (a*ans) % n
     return ans
 
-# định nghĩa 2.3.6 trong silde về ktra hợp số
 def check_composite(n, a, r, s):
-    x = Mod_Exp(a, r, n)
-    if(x == 1 or x== n-1):
+    y = Mod_Exp(a, r, n)
+    if(y == 1 or y == n-1):
         return False
-    for r in range(s):
-        x = x*x%n
-        if(x == n-1):
+    for j in range(s):
+        y = (y**2)%n
+        if(y == y-1):
             return False
     return True
 
@@ -40,7 +39,8 @@ def miller_rabin(n, iter_ = 20):
     for i in range(iter_):
         # 2 <= a <= n-2 như trong slide
         a = random.randint(2, n-2)
-        # kiểm tra là hợp số (compóite)
+        # kiểm tra là hợp số (composite)
+        # bước 2.3 trong thuật toán (slide)
         if(check_composite(n, a, r, s)):
             return False
     return True
@@ -56,8 +56,7 @@ def selectNum():
         # ktra xem có là nguyên tố ko?
         if(miller_rabin(n)):
             return n
-# thuật toán euclit mở rộng trong silde
-# mình chưa hiểu rõ thuật toán này nhưng triển khai theo slide
+# thuật toán euclid mở rộng trong silde
 def ExtEuclidean(a, b):
     if(b == 0):
         return a, 1, 0
@@ -96,6 +95,7 @@ def key_gen():
         # <=> e^-1 mod phi_n = y
         gcd, x, y = ExtEuclidean(phi_n, e)
         if(gcd == 1):
+            # d = inverse(e) % phi_n
             d = y % phi_n
             return e, n, d
 
