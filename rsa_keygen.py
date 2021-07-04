@@ -3,28 +3,17 @@ import random
 # tính a^k mod n
 # thuật toán nhân bình phương có lặp trong slide
 def Mod_Exp(a, k, n):
-    ans = 1
+    res = 1
     if(k == 0):
         return ans
     if(k&1):
-        ans = a
-    lenk = len(str(bin(k))) - 2
-    for i in range(lenk):
+        res = a
+    while(k > 0):
         a = a**2  % n
         k >>= 1
         if(k&1):    
-            ans = (a*ans) % n
-    return ans
-
-def check_composite(n, a, r, s):
-    y = Mod_Exp(a, r, n)
-    if(y == 1 or y == n-1):
-        return False
-    for j in range(s):
-        y = (y**2)%n
-        if(y == y-1):
-            return False
-    return True
+            res = (a*res) % n
+    return res
 
 # thuật toán ktra số nguyên tố Miller Rabin
 def miller_rabin(n, iter_ = 20):
@@ -39,10 +28,16 @@ def miller_rabin(n, iter_ = 20):
     for i in range(iter_):
         # 2 <= a <= n-2 như trong slide
         a = random.randint(2, n-2)
-        # kiểm tra là hợp số (composite)
-        # bước 2.3 trong thuật toán (slide)
-        if(check_composite(n, a, r, s)):
-            return False
+        y = Mod_Exp(a, r, n)
+        if(y != 1 and y != n-1):
+            j = 1
+            while(j <= s-1 and y != n-1):
+                y = y**2 % n
+                if(y == 1):
+                    return False
+                j += 1
+            if(y != n-1):
+                return False
     return True
 
 # hàm này trả về random 1 số nguyên tố
@@ -82,9 +77,8 @@ def ExtEuclidean(a, b):
 def key_gen():
     p = selectNum()
     q = selectNum()
-    # test prime num here: https://www.wolframalpha.com/input/?i=Is+10001+prime%3F&lk=3
     n = p*q
-    print(f'p = {p}\nq = {q}')
+    #print(f'p = {p}\nq = {q}')
     phi_n = (p-1)*(q-1)
     
     while(True):
