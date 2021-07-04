@@ -18,9 +18,9 @@ def decrypt(C, d, n):
             # ham n.to_bytes(blocksize, 'big') chuyen so nguyen sang dang bytes
             # nhung khi ta ko biet trc dc blocksize chinh xac la bao nhieu
             # neu nho hon thi se raise loi => dung try, except tang blocksize
-            # den khi ko con loi => tinh dc msg 
-            msg = Mod_Exp(C, d, n).to_bytes(blocksize, 'big')
-            return msg
+            # den khi ko con loi => tinh dc bPlainText (dang bytes)
+            bPlainText = Mod_Exp(C, d, n).to_bytes(blocksize, 'big')
+            return bPlainText
         except:
             blocksize += 1
 
