@@ -13,10 +13,10 @@ def Mod_Exp(a, k, n):
     return res
 
 if __name__ == '__main__':
-    # M ep kieu sang bytes
-    M = bytes(input('Nhap plain text: '), 'utf-8')
+    # plaintext ep kieu sang bytes
+    bPlaintext = bytes(input('Nhap plain text: '), 'utf-8')
     e = int(input('Nhap e: '))
     n = int(input('nhap n: '))
-    # ep M sang int
-    M = int(M.hex(), 16)
+    # ep bPlaintext sang int
+    M = int(bPlaintext.hex(), 16)
     print(f"C = {Mod_Exp(M, e, n)}")
