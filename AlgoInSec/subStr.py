@@ -1,98 +1,84 @@
-# note TH subtring o cuoi text
-def L(ch_T, P):
-	n = len(P)
-	for i in range(n-1, -2, -1):
-		if(i == -1):
-			return -1
-		if(ch_T == P[i]):
-			return i
+def L(ch, p):
+    for i in range(len(p)-1, -1, -1):
+        if(ch == p[i]):
+            return i
+    return -1
 
-def BM(T, P):
-	m = len(P)
-	n = len(T)
-	i = m -1
-	j = m -1
-	while(i < n):
-		if(P[j] == T[i]):
-			if(j == 0):
-				return i
-			else:
-				i -= 1
-				j -= 1
-		else:
-			i = i + m - min(j, 1+L(T[i], P))
-			j = m - 1
-	return -1
+def BM(t, p):
+    n = len(t)
+    m = len(p)
+    i = m - 1
+    j = m - 1
+    while(i <= n):
+        if(p[j] == t[i]):
+            if(j == 0):
+                return i
+            i -= 1
+            j -= 1
+        else:
+            i = i + m - min(j, 1+L(t[i], p))
+            j = m -1
+    return -1
 
-def prefix(p):
+def brute(t, p):
+    n = len(t)
+    m = len(p)
+    i, j  = 0, 0
+    while(i+j < n):
+        if(p[j] == t[i+j]):
+            if(j == m-1):
+                return i
+            j += 1
+        else:
+            i += 1
+            j = 0
+    return -1
+
+def pre(p, m):
+	return [p[:i+1] for i in range(m)]
+def suf(p, m):
+	return [p[i:m] for i in range(m)]
+def failureFunc(p):
 	m = len(p)
-	ar = [0]*m
-	j=0 
-	for i in range(1, m):
-		while(j>=0 and p[j]!=p[i]):
-			if j-1>=0:
-				j=ar[j-1]
-			else:
-				j =- 1 
-		j += 1
-		ar[i] = j
-	return ar
-
-def lps(P):
-	m = len(P)
-	i = 0
-	j = 1
-	arr= [0] * m
-	while j < m:
-		if P[i] == P[j]:
-			arr[j] = i + 1
-			i+=1
-			j+=1
-		elif i == 0:
-			arr[j] = 0
-			j+=1
+	F = [0]*m
+	F[0] = -1
+	for j in range(1, m):
+		pre_ = pre(p[:j], m)
+		suf_ = suf(p[1:j], m)
+		ar = list(set(pre_) & set(suf_))
+		if(len(ar) == 0):
+			F[j] = 0
 		else:
-			i = arr[i - 1]
-	return arr
+			max_len = max([len(i) for i in ar])
+			F[j] = max_len
+	return F
 
-print(prefix('abacab'))
-# [0, 0, 1, 0, 1, 2]
-def KMP(T, P):
-	arr = lps(P)
-	m = len(P)
-	n = len(T)
+def kmp(t, p):
+	n = len(t)
+	m = len(p)
+	F = failureFunc(p)
 	i = 0
 	j = 0
-	while (i < n):
-		if (P[j] == T[i]):
-			i += 1
-			j += 1
-		if(j == m):
-			return i-j
-		elif(i < n and P[j] != T[i]):
-			if(j != 0):
-				j = arr[j - 1]
-			else:
-				i+=1
-	return -1
-
-def search(T, P):
-	m = len(P)
-	n = len(T)
-	i = 0
-	j = 0
-	while(i < n-m):
-		if(P[j] == T[i+j]):
-			if(j == m -1):
+	while(i+j < n):
+		if(t[i+j] == p[j]):
+			if(j == m-1):
 				return i
 			j += 1
 		else:
-			j = 0
-			i += 1
+			i = i + j - F[j]
+			if(F[j] == -1):
+				j = 0
+			else:
+				j = F[j]
 	return -1
-# print(KMP('abacaabadcabacabaabb', 'abacab'))
+
+print(kmp('abacaabadcabacabaabb', 'abacab'))
 # 10
-# print(KMP("this place it was brighter than tomorrow", 'it was'))
+print(kmp("this place it was brighter than tomorrow", 'it was'))
 # 11
-# print(KMP("ABABDABACDABABCABAB", "ABCA"))
+print(kmp("ABABDABACDABABCABAB", "ABCA"))
 # 12
+print(kmp("abcaab", "abd"))
+# -1
+print(kmp("an toan", "oan"))
+# 4
