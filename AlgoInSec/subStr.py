@@ -9,7 +9,7 @@ def BM(t, p):
     m = len(p)
     i = m - 1
     j = m - 1
-    while(i <= n):
+    while(i < n):
         if(p[j] == t[i]):
             if(j == 0):
                 return i
@@ -34,17 +34,17 @@ def brute(t, p):
             j = 0
     return -1
 
-def pre(p, m):
-	return [p[:i+1] for i in range(m)]
-def suf(p, m):
-	return [p[i:m] for i in range(m)]
+def pre(subp):
+	return [subp[:i+1] for i in range(len(subp))]
+def suf(subp):
+	return [subp[i:len(subp)] for i in range(len(subp))]
 def failureFunc(p):
 	m = len(p)
 	F = [0]*m
 	F[0] = -1
 	for j in range(1, m):
-		pre_ = pre(p[:j], m)
-		suf_ = suf(p[1:j], m)
+		pre_ = pre(p[:j])
+		suf_ = suf(p[1:j])
 		ar = list(set(pre_) & set(suf_))
 		if(len(ar) == 0):
 			F[j] = 0
@@ -72,13 +72,13 @@ def kmp(t, p):
 				j = F[j]
 	return -1
 
-print(kmp('abacaabadcabacabaabb', 'abacab'))
+print(BM('abacaabadcabacabaabb', 'abacab'))
 # 10
-print(kmp("this place it was brighter than tomorrow", 'it was'))
+print(BM("this place it was brighter than tomorrow", 'it was'))
 # 11
-print(kmp("ABABDABACDABABCABAB", "ABCA"))
+print(BM("ABABDABACDABABCABAB", "ABCA"))
 # 12
-print(kmp("abcaab", "abd"))
+print(BM("abcaab", "abd"))
 # -1
-print(kmp("an toan", "oan"))
+print(BM("an toan", "oan"))
 # 4

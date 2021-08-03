@@ -1,55 +1,42 @@
 import math
 
 def Fp2matrix(a, p, w):
-	t = math.ceil(math.ceil(math.log(p, 2))/w)
-	A = [0 for i in range(t)]
-	for i in range(t -1, -1, -1):
-		A[t-i-1] = a//pow(2, i*w)
-		a -= A[t-i-1] * pow(2, i*w)
-	return A
-
-def matrix_to_dec(a, w):
-	a.reverse()
-	sum = 0
-	for i in range(len(a)):
-		sum += a[i] * pow(2, i * w)
-	return sum
+    t = math.ceil(math.ceil(math.log(p, 2))/ w)
+    A = [0]*t
+    for i in range(t-1, -1, -1):
+        tmp = 2**(w*i)
+        A[t-1-i] = a // tmp
+        a -= A[t-1-i]*tmp
 
 def sumOf2LargeNum(a, b, p, w):
-	if(type(a) is not list and type(b) is not list):
-		a = Fp2matrix(a, p, w)
-		b = Fp2matrix(b, p, w)
-	t = math.ceil(math.ceil(math.log(p, 2))/w)
-	A = [0, [0 for i in range(t)]]
-	n = pow(2, w)
-	carry = 0
-	for i in range(t -1, -1, -1):
-		sum = a[i] + b[i] + carry
-		if(sum >= n):
-			carry = 1
-		else:
-			carry = 0
-		A[1][i] = sum % n
-	A[0] = carry
-	return A
+    t = math.ceil(math.ceil(math.log(p, 2))/ w)
+    a = Fp2matrix(a, p, w, t)
+    b = Fp2matrix(b, p, w, t)
+    c = [0, [0]*t]
+    n = 2 **w
+    for i in range(t-1, -1, -1):
+        sum = a[i] + b[i] + c[0]
+        if(sum >= n):
+            c[0] = 1
+        else:
+            c[0] = 0
+        c[1][i] = sum %n
+    return c
 
-def diffOf2LargeNum(a, b, p, w):
-	if(type(a) is not list and type(b) is not list):
-		a = Fp2matrix(a, p, w)
-		b = Fp2matrix(b, p, w)
-	t = math.ceil(math.ceil(math.log(p, 2))/w)
-	A = [0, [0 for i in range(t)]]
-	n = pow(2, w)
-	carry = 0
-	for i in range(t -1, -1, -1):
-		diff = a[i] - b[i] - carry
-		if(diff < 0):
-			carry = 1
-		else:
-			carry = 0
-		A[1][i] = diff % n
-	A[0] = carry
-	return A
+def diff2LargeNum(a, b, p, w):
+    t = math.ceil(math.ceil(math.log(p, 2))/w)
+    a = Fp2matrix(a, p, w, t)
+    b = Fp2matrix(b, p, w, t)
+    c = [0, [0]*t]
+    n = 2**w
+    for i in range(t-1, -1, -1):
+        diff = a[i] - b[i] - c[0]
+        if(diff < 0):
+            c[0] = 1
+        else:
+            c[0] = 0
+        c[1][i] = diff%n
+    return c
 
 def isGreaterOrEqual(a, b):
 	for i in range(len(a)):
@@ -63,17 +50,16 @@ def add_in_Fp(a, b, p, w):
 	if(type(a) is not list and type(b) is not list):
 		a = Fp2matrix(a, p, w)
 		b = Fp2matrix(b, p, w)
+		
 	c = sumOf2LargeNum(a, b, p, w)
-	arr_p = Fp2matrix(p, p ,w)
-	if(c[0] == 1):
-		return diffOf2LargeNum(c[1], arr_p, p, w)
-	else:
-		print(c[1])
-		print(arr_p)
-		if isGreaterOrEqual(c[1], arr_p):
-			return diffOf2LargeNum(c[1], arr_p, p, w)
-		else:
-			return c[1]
+	ar_p = Fp2matrix(p, p, w, t)
+    if(c[0] == 1):
+        return DiffOf2LargeNum(c[1], ar_p, p, w, t)[1]
+    else:
+        if(GreaterOrEqu(c[1], ar_p)):
+            return DiffOf2LargeNum(c[1], ar_p, p, w, t)[1]
+        else:
+            return c[1]
 
 def sub_in_Fp(a, b, p, w):
 	if(type(a) is not list and type(b) is not list):
@@ -96,12 +82,13 @@ def mulInFp(a, b, p, w):
     for i in range(t-1, -1, -1):
         carry = 0
         for j in range(t-1, -1, -1):
-            tmp = int(a[i]) * int(b[j]) + c[i+j+1]+ carry
+            tmp = a[i] * b[j] + c[i+j+1]+ carry
             c[i+j+1] = tmp % n
             carry = (tmp >> w) % n
         c[i] = carry
     return c
 
+# a >= b
 def ExtEuclidean(a, b):
 	if(b == 0):
 		return a, 1, 0
@@ -146,11 +133,11 @@ def inverse_Fp(a, p):
 #___________________________________TestCases_______________________________________
 # print(add_in_Fp(a=[157,0,173,23], b=[169,1,0,64], w=8, p=2147483646))
 # print(add_in_Fp(a=38762497, b= 568424364, w=8, p=2147483647))
-print(mulInFp(a = [0, 11, 173, 248] ,b = [0, 1, 226, 64],w = 8,p = 2147483647))
+# print(mulInFp(a = [0, 11, 173, 248] ,b = [0, 1, 226, 64],w = 8,p = 2147483647))
 # [0, 0, 0, 22, 0, 120, 110, 0]
 # print(ExtEuclidean(a= 489573857, b= 5))
 # print(EEA(489573857, 5))
 # print(inverse_Fp(20200275038338720, 18872986474482592,))
 # print(inverse_Fp(45682375, 489573857))
-print(mulInFp([0, 8, 1, 103], [0, 0, 127, 37], 2147483647, 8))
+# print(mulInFp([0, 8, 1, 103], [0, 0, 127, 37], 2147483647, 8))
 # [0, 0, 0, 3, 249, 218, 76, 227]
