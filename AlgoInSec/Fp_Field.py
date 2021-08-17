@@ -113,7 +113,7 @@ def ExtEuclidean(a, b):
 		y2 = y1
 		y1 = y
 	return a, x2, y2
-
+# return the val * a mod p = 1
 def inverse_Fp(a, p):
 	u = a
 	v = p
